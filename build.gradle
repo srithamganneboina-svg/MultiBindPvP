@@ -19,15 +19,15 @@ repositories {
 }
 
 loom {
-	splitEnvironmentSourceSets()
+    // REMOVE or COMMENT OUT splitEnvironmentSourceSets()
+    // splitEnvironmentSourceSets() 
 
-	mods {
-		"modid" {
-			sourceSet sourceSets.main
-			sourceSet sourceSets.client
-		}
-	}
-
+    mods {
+        "modid" {
+            sourceSet sourceSets.main
+            // REMOVE the .client line since we only have one file
+        }
+    }
 }
 
 dependencies {
