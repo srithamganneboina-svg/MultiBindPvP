@@ -13,7 +13,7 @@ public class ExampleMod implements ModInitializer {
 
     @Override
     public void onInitialize() {
-        // 1. Register Attack Key (G)
+        // 1. Attack Key (G)
         KeyBinding secondAttack = KeyBindingHelper.registerKeyBinding(new KeyBinding(
             "key.multi_bind.attack2", 
             InputUtil.Type.KEYSYM, 
@@ -21,7 +21,7 @@ public class ExampleMod implements ModInitializer {
             "PvP Binds"
         ));
 
-        // 2. Register Bucket Key (Q)
+        // 2. Bucket Key (Q)
         KeyBinding bucketKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
             "key.multi_bind.bucket_switch", 
             InputUtil.Type.KEYSYM, 
@@ -29,28 +29,28 @@ public class ExampleMod implements ModInitializer {
             "PvP Binds"
         ));
 
-        // 3. Logic Loop
+        // 3. The Logic
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
-            if (client.player == null) return;
-
-            // Attack Logic
-            if (secondAttack.isPressed()) {
-                client.options.attackKey.setPressed(true);
-            }
-
-            // Bucket Logic
-            if (bucketKey.isPressed()) {
-                pressTicks++;
-                wasPressed = true;
-                if (pressTicks > 5) {
-                    client.player.getInventory().selectedSlot = 4; // Slot 5
+            if (client.player != null) {
+                // Handle G
+                if (secondAttack.isPressed()) {
+                    client.options.attackKey.setPressed(true);
                 }
-            } else if (wasPressed) {
-                if (pressTicks <= 5) {
-                    client.player.getInventory().selectedSlot = 3; // Slot 4
+
+                // Handle Q
+                if (bucketKey.isPressed()) {
+                    pressTicks++;
+                    wasPressed = true;
+                    if (pressTicks > 5) {
+                        client.player.getInventory().selectedSlot = 4;
+                    }
+                } else if (wasPressed) {
+                    if (pressTicks <= 5) {
+                        client.player.getInventory().selectedSlot = 3;
+                    }
+                    pressTicks = 0;
+                    wasPressed = false;
                 }
-                pressTicks = 0;
-                wasPressed = false;
             }
         });
     }
