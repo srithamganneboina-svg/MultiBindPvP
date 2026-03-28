@@ -13,7 +13,7 @@ public class ExampleMod implements ModInitializer {
 
     @Override
     public void onInitialize() {
-        // 1. EXTRA ATTACK (G)
+        // G Key - Extra Attack
         KeyBinding secondAttack = KeyBindingHelper.registerKeyBinding(new KeyBinding(
             "key.multi_bind.attack2", 
             InputUtil.Type.KEYSYM, 
@@ -21,7 +21,7 @@ public class ExampleMod implements ModInitializer {
             "PvP Binds"
         ));
 
-        // 2. BUCKET SWITCHER (Q)
+        // Q Key - Bucket Switcher (Tap for Slot 4, Hold for Slot 5)
         KeyBinding bucketKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
             "key.multi_bind.bucket_switch", 
             InputUtil.Type.KEYSYM, 
@@ -32,23 +32,23 @@ public class ExampleMod implements ModInitializer {
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             if (client.player == null) return;
 
-            // Attack Logic
+            // Attack Logic (G)
             if (secondAttack.isPressed()) {
                 client.options.attackKey.setPressed(true);
             }
 
-            // Bucket Logic (TAP = Slot 4, HOLD = Slot 5)
+            // Bucket Logic (Q)
             if (bucketKey.isPressed()) {
                 pressTicks++;
                 wasPressed = true;
-                // If held for more than 5 ticks, switch to Slot 5 (Water)
+                // Hold longer than 5 ticks (approx 0.25s) for Slot 5
                 if (pressTicks > 5) {
-                    client.player.getInventory().selectedSlot = 4; 
+                    client.player.getInventory().selectedSlot = 4;
                 }
             } else if (wasPressed) {
-                // If released quickly, switch to Slot 4 (Lava)
+                // Quick Tap for Slot 4
                 if (pressTicks <= 5) {
-                    client.player.getInventory().selectedSlot = 3; 
+                    client.player.getInventory().selectedSlot = 3;
                 }
                 pressTicks = 0;
                 wasPressed = false;
