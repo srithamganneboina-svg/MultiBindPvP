@@ -19,16 +19,16 @@ repositories {
 }
 
 loom {
-    // REMOVE or COMMENT OUT splitEnvironmentSourceSets()
-    // splitEnvironmentSourceSets() 
+    accessWidenerPath = null
+    it.forgeCapabilities.set(false) 
 
     mods {
         "modid" {
             sourceSet sourceSets.main
-            // REMOVE the .client line since we only have one file
         }
     }
 }
+
 
 dependencies {
 	// To change the versions see the gradle.properties file
