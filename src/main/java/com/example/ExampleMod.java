@@ -12,28 +12,43 @@ public class ExampleMod implements ModInitializer, ClientModInitializer {
     private int ticks = 0;
     private boolean pressed = false;
 
+    // This handles the "Main" entrypoint
     @Override
     public void onInitialize() {
-        // This handles the "main" entrypoint
+        System.out.println("PvP Mod Initialized!");
     }
 
+    // This handles the "Client" entrypoint (The actual Binds)
     @Override
     public void onInitializeClient() {
-        // This handles the "client" entrypoint (PvP Binds)
-        KeyBinding attackG = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.attack2", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_G, "PvP"));
-        KeyBinding bucketQ = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.bucket", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_Q, "PvP"));
+        // Registers the G and Q keys in your Options > Controls menu
+        KeyBinding attackG = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+            "key.attack2", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_G, "PvP Binds"));
+        
+        KeyBinding bucketQ = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+            "key.bucket", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_Q, "PvP Binds"));
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             if (client.player == null) return;
 
-            if (attackG.isPressed()) client.options.attackKey.setPressed(true);
+            // G Key: Auto-Attack Logic
+            if (attackG.isPressed()) {
+                client.options.attackKey.setPressed(true);
+            }
 
+            // Q Key: Multi-Slot Logic
             if (bucketQ.isPressed()) {
                 ticks++;
                 pressed = true;
-                if (ticks > 5) client.player.getInventory().selectedSlot = 4; // Slot 5
+                // If held for more than 5 ticks (0.25s), switch to Slot 5
+                if (ticks > 5) {
+                    client.player.getInventory().selectedSlot = 4; 
+                }
             } else if (pressed) {
-                if (ticks <= 5) client.player.getInventory().selectedSlot = 3; // Slot 4
+                // If it was just a quick tap (less than 5 ticks), switch to Slot 4
+                if (ticks <= 5) {
+                    client.player.getInventory().selectedSlot = 3; 
+                }
                 ticks = 0;
                 pressed = false;
             }
