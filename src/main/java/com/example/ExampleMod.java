@@ -1,10 +1,10 @@
 package com.example;
 
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import org.lwjgl.glfw.GLFW;
 
 public class ExampleMod implements ModInitializer {
@@ -13,7 +13,7 @@ public class ExampleMod implements ModInitializer {
 
     @Override
     public void onInitialize() {
-        // Attack Bind (G)
+        // 1. Register Attack Key (G)
         KeyBinding secondAttack = KeyBindingHelper.registerKeyBinding(new KeyBinding(
             "key.multi_bind.attack2", 
             InputUtil.Type.KEYSYM, 
@@ -21,7 +21,7 @@ public class ExampleMod implements ModInitializer {
             "PvP Binds"
         ));
 
-        // Bucket Bind (Q)
+        // 2. Register Bucket Key (Q)
         KeyBinding bucketKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
             "key.multi_bind.bucket_switch", 
             InputUtil.Type.KEYSYM, 
@@ -29,24 +29,25 @@ public class ExampleMod implements ModInitializer {
             "PvP Binds"
         ));
 
+        // 3. Logic Loop
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             if (client.player == null) return;
 
-            // Handle G - Attack
+            // Attack Logic
             if (secondAttack.isPressed()) {
                 client.options.attackKey.setPressed(true);
             }
 
-            // Handle Q - Tap for Slot 4, Hold for Slot 5
+            // Bucket Logic
             if (bucketKey.isPressed()) {
                 pressTicks++;
                 wasPressed = true;
-                if (pressTicks > 5) { 
-                    client.player.getInventory().selectedSlot = 4; 
+                if (pressTicks > 5) {
+                    client.player.getInventory().selectedSlot = 4; // Slot 5
                 }
             } else if (wasPressed) {
-                if (pressTicks <= 5) { 
-                    client.player.getInventory().selectedSlot = 3; 
+                if (pressTicks <= 5) {
+                    client.player.getInventory().selectedSlot = 3; // Slot 4
                 }
                 pressTicks = 0;
                 wasPressed = false;
