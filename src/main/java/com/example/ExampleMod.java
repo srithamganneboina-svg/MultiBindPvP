@@ -13,7 +13,7 @@ public class ExampleMod implements ModInitializer {
 
     @Override
     public void onInitialize() {
-        // --- FUNCTION 1: EXTRA ATTACK BUTTON (Default: G) ---
+        // Attack Bind (G)
         KeyBinding secondAttack = KeyBindingHelper.registerKeyBinding(new KeyBinding(
             "key.multi_bind.attack2", 
             InputUtil.Type.KEYSYM, 
@@ -21,7 +21,7 @@ public class ExampleMod implements ModInitializer {
             "PvP Binds"
         ));
 
-        // --- FUNCTION 2: UHC BUCKET SWITCHER (Default: Q) ---
+        // Bucket Bind (Q)
         KeyBinding bucketKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
             "key.multi_bind.bucket_switch", 
             InputUtil.Type.KEYSYM, 
@@ -29,26 +29,23 @@ public class ExampleMod implements ModInitializer {
             "PvP Binds"
         ));
 
-        // This part handles the "Logic" every tick (20 times a second)
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             if (client.player == null) return;
 
-            // 1. If you hold G, it attacks
+            // Handle G - Attack
             if (secondAttack.isPressed()) {
                 client.options.attackKey.setPressed(true);
             }
 
-            // 2. If you interact with Q (Tap = Lava, Hold = Water)
+            // Handle Q - Tap for Slot 4, Hold for Slot 5
             if (bucketKey.isPressed()) {
                 pressTicks++;
                 wasPressed = true;
                 if (pressTicks > 5) { 
-                    // Switches to Slot 5 (Water)
                     client.player.getInventory().selectedSlot = 4; 
                 }
             } else if (wasPressed) {
                 if (pressTicks <= 5) { 
-                    // Switches to Slot 4 (Lava)
                     client.player.getInventory().selectedSlot = 3; 
                 }
                 pressTicks = 0;
